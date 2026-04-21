@@ -234,7 +234,7 @@ with bottom_l:
         },
     ))
     fig.update_layout(height=280, margin=dict(t=30, b=0))
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
 with bottom_m:
     st.write("**Model Context**")
@@ -250,7 +250,7 @@ Tolerance:    ±{state.get('tolerance_pct', 15.0):.0f}%
 
 with bottom_r:
     if annotated_image and Path(annotated_image).exists():
-        st.image(annotated_image, caption=f"Well {current_well} — annotated", use_container_width=True)
+        st.image(annotated_image, caption=f"Well {current_well} — annotated", width='stretch')
     else:
         st.info("No image yet — waiting for first detection.")
 
@@ -275,7 +275,7 @@ if not log_df.empty and "volume_ul" in log_df.columns and "expected_vol" in log_
     ))
     fig2.update_layout(height=260, margin=dict(t=10, b=0),
                        xaxis_title="Well", yaxis_title="µL")
-    st.plotly_chart(fig2, use_container_width=True)
+    st.plotly_chart(fig2, width='stretch')
 
 # --- Row 5: Audit log ---
 st.divider()
@@ -288,6 +288,6 @@ else:
     styled = log_df[available].tail(20).copy()
     if "error_flag" in styled.columns:
         styled["error_flag"] = styled["error_flag"].map({0: "✅ OK", 1: "❌ ERROR"})
-    st.dataframe(styled, use_container_width=True, hide_index=True)
+    st.dataframe(styled, width='stretch', hide_index=True)
 
 st.caption(f"Last refreshed: {time.strftime('%H:%M:%S')}  |  State file: {LIVE_STATE_FILE}")

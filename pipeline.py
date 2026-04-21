@@ -68,6 +68,7 @@ log = logging.getLogger("pipeline")
 # ── Load OT2 protocol components ─────────────────────────────────────────────
 
 from ot2_protocol import OT2Client
+from state_bridge import write_live_state
 
 # ── Detection (HSV color detection) ──────────────────────────────────────────
 
@@ -297,6 +298,18 @@ def run():
             # ── Step 3: HSV detection + volume check ──────────────────
             result, error_flag = check_well(str(img_path), volume)
 
+            write_live_state(
+                status="running",
+                current_well=well,
+                expected_vol=volume,
+                result=result,
+                error_flag=error_flag,
+                wells_completed=len([r for r in report if r["error"] == 0]),
+                wells_total=96,
+                tolerance_pct=args.tolerance,
+                camera_connected=True,
+            )
+
             decision = "CONTINUE" if error_flag == 0 else "STOP"
             vol_detected = result.get("volume_ul", "N/A")
             if isinstance(vol_detected, (int, float)):
@@ -344,6 +357,17 @@ def run():
                 robot.drop_tip()
                 robot.set_lights(False)
                 cap.release()
+                write_live_state(
+                    status="stopped",
+                    current_well=well,
+                    expected_vol=volume,
+                    result=result,
+                    error_flag=1,
+                    wells_completed=len([r for r in report if r["error"] == 0]),
+                    wells_total=96,
+                    tolerance_pct=args.tolerance,
+                    camera_connected=False,
+                )
                 _print_report(report, stopped_at=well)
                 return
 
@@ -356,11 +380,22 @@ def run():
 
     robot.set_lights(False)
     cap.release()
+    write_live_state(
+        status="complete",
+        current_well="—",
+        expected_vol=0,
+        result={},
+        error_flag=0,
+        wells_completed=96,
+        wells_total=96,
+        tolerance_pct=args.tolerance,
+        camera_connected=False,
+    )
     _print_report(report, stopped_at=None)
 
 # ── Final report ──────────────────────────────────────────────────────────────
 
-def _print_report(report: list, stopped_at: str | None):
+def _print_report(report: list, stopped_at):
     print("\n" + "=" * 72)
     if stopped_at:
         print(f"  PROTOCOL STOPPED at well {stopped_at}")

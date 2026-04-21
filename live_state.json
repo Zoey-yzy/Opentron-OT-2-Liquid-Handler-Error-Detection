@@ -1,0 +1,23 @@
+{
+  "status": "running",
+  "current_well": "A12",
+  "expected_vol": 300.0,
+  "detected_vol": 277.62,
+  "deviation_pct": 7.46,
+  "error_flag": 0,
+  "decision": "CONTINUE",
+  "wells_completed": 11,
+  "wells_total": 96,
+  "tolerance_pct": 15.0,
+  "camera_connected": true,
+  "mpi": 142.0,
+  "pipette_w_px": 20.7,
+  "pipette_y": 271.3,
+  "liquid_y": 295.3,
+  "z_height": 0.0,
+  "annotated_image": "/Users/zoey/Documents/2026spring/Autolab/project/captured_images/Row_A_Well_12_300.0uL_auto_annotated.jpg",
+  "mae": "2.44",
+  "r2": "0.997",
+  "sample_count": 430,
+  "timestamp": "2026-04-21 13:24:27"
+}
